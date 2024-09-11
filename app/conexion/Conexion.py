@@ -1,16 +1,22 @@
 import psycopg2
 
-
 class Conexion:
 
-    """Metodo contructor 
+    """Metodo constructor
     """
     def __init__(self):
-        self.con = psycopg2.connect("dbname=veterinaria-db user=postgres host=localhost password=12345678")
-        
-        """getConexion
+        # https://www.psycopg.org/docs/extensions.html#psycopg2.extensions.parse_dsn
+        dbname = "veterinariadb"
+        user = "postgres"
+        password = "15dediciembre"
+        host = "127.0.0.1"
+        port = 5432
+        #self.con = psycopg2.connect("dbname=veterinariadb user=postgres host=localhost password=15dediciembre")
+        self.con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
 
-            retorna la instancia de la base de datos
-        """
+    """getConexion
+
+        retorna la instancia de la base de datos
+    """
     def getConexion(self):
-        return self.con 
+        return self.con
