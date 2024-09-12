@@ -62,3 +62,25 @@ Ciudades
     </div>
 </div>
 {% endblock %}
+{% block js %}
+<script>
+  S(function(){
+
+    debugger;
+    fetch('/referenciales/ciudad/get-ciudades')
+      .then(function(r) {
+        debugger;
+        return r.json();
+      })
+      .then(function(data) {
+        debugger;
+        console.log(data);
+      })
+      .catch(function(err){
+        debugger;
+        console.error(err);
+      })
+
+  });
+</script>
+{% endblock %}
