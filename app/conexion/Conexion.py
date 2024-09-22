@@ -11,7 +11,7 @@ class Conexion:
         password = "15dediciembre"
         host = "127.0.0.1"
         port = 5432
-        #self.con = psycopg2.connect("dbname=veterinariadb user=postgres host=localhost password=15dediciembre")
+        #self.con = psycopg2.connect("dbname=veterinariadb user=Postgres host=localhost password=15dediciembre")
         self.con = psycopg2.connect(dbname=dbname, user=user, password=password, host=host, port=port)
 
     """getConexion
