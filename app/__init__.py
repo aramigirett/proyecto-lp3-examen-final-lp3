@@ -13,6 +13,7 @@ from app.rutas.referenciales.estado_cita.estado_cita_routes import estacitmod  #
 from app.rutas.referenciales.persona.persona_routes import persmod  #persona
 from app.rutas.referenciales.especialidad.especialidad_routes import especimod  #especialidad
 from app.rutas.referenciales.dia.dia_routes import diamod  #dia
+from app.rutas.referenciales.historia_clinica.historiaclinica_routes import hiscmod
 
 # registrar referenciales
 modulo0 = '/referenciales'
@@ -26,6 +27,7 @@ app.register_blueprint(estacitmod, url_prefix=f'{modulo0}/estadocita')  #estado 
 app.register_blueprint(persmod, url_prefix=f'{modulo0}/persona') #persona
 app.register_blueprint(especimod, url_prefix=f'{modulo0}/especialidad') #especialidad
 app.register_blueprint(diamod, url_prefix=f'{modulo0}/dia') #dia
+app.register_blueprint(hiscmod, url_prefix=f'{modulo0}/historiaclinica') #historia clinica
 
 #ciudad
 from app.rutas.referenciales.ciudad.ciudad_api import ciuapi
@@ -56,6 +58,10 @@ from app.rutas.referenciales.especialidad.especialidad_api import especiapi
 
 #dia
 from app.rutas.referenciales.dia.dia_api import diaapi
+
+#historia clinica
+from app.rutas.referenciales.historia_clinica.historiaclinica_api import histocliapi
+
 
 # APIS v1
 #Ciudad
@@ -97,3 +103,7 @@ app.register_blueprint(especiapi, url_prefix=version1)
 #dia
 version1 = '/api/v1'
 app.register_blueprint(diaapi, url_prefix=version1)
+
+#Historia Clinica
+version1 = '/api/v1'
+app.register_blueprint(histocliapi, url_prefix=version1)
