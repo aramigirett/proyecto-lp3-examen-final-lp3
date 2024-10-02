@@ -113,7 +113,7 @@ class DiagnosticoDao:
             cur.close()
             con.close()
 
-    def delete(self,Diagnosticoid):
+    def deleteDiagnostico(self, id):
 
         updateDiagnosticoSQL = """
         DELETE FROM diagnosticos
