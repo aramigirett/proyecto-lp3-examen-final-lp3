@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-    
+
 {% block titulo %}
 Persona
 {% endblock %}
@@ -17,7 +17,11 @@ Persona
         <table class="table table-striped" id="tbl">
           <thead>
             <tr>
-              <th>Descripción</th>
+              <th>Nombre</th>
+              <th>Apellido</th> <!-- Agregado campo 'apellido' -->
+              <th>Teléfono</th>
+              <th>Correo</th>
+              <th>Dirección</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -29,7 +33,6 @@ Persona
 
     <!-- El formulario -->
     <div class="modal" id="modalFormulario">
-      <!-- La clase modal-dialog-centered centra el modal -->
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
@@ -43,8 +46,24 @@ Persona
           <div class="modal-body">
             <div class="form-group">
               <input type="hidden" id="txtIdPersona">
-              <label for="txtDescripcion">Descripción:</label>
-              <input type="text" class="form-control" placeholder="Ingrese a la persona" id="txtDescripcion">
+              <label for="txtNombre">Nombre:</label>
+              <input type="text" class="form-control" placeholder="Ingrese el nombre" id="txtNombre">
+            </div>
+            <div class="form-group">
+              <label for="txtApellido">Apellido:</label> <!-- Nuevo campo 'apellido' -->
+              <input type="text" class="form-control" placeholder="Ingrese el apellido" id="txtApellido">
+            </div>
+            <div class="form-group">
+              <label for="txtTelefono">Teléfono:</label>
+              <input type="text" class="form-control" placeholder="Ingrese el teléfono" id="txtTelefono">
+            </div>
+            <div class="form-group">
+              <label for="txtCorreo">Correo:</label>
+              <input type="email" class="form-control" placeholder="Ingrese el correo" id="txtCorreo">
+            </div>
+            <div class="form-group">
+              <label for="txtDireccion">Dirección:</label>
+              <input type="text" class="form-control" placeholder="Ingrese la dirección" id="txtDireccion">
             </div>
           </div>
 
@@ -71,7 +90,6 @@ Persona
 
 {% block js %}
 <script>
-
   const initDatatable = () => {
     $('#tbl').DataTable({
       language: {
@@ -79,7 +97,11 @@ Persona
       },
       ajax:'/api/v1/personas',
       columns: [
-        { data: 'descripcion' },
+        { data: 'nombre' }, // Agregado campo 'nombre'
+        { data: 'apellido' }, // Agregado campo 'apellido'
+        { data: 'telefono' },
+        { data: 'correo' },
+        { data: 'direccion' },
         { data: function(row) {
             return `<button type="button" name="btn_editar" class="btn btn-info" data-id="${row.id}">Editar</button>
                     <button type="button" name="btn_eliminar" class="btn btn-warning" data-id="${row.id}">Eliminar</button>`
@@ -91,11 +113,13 @@ Persona
 
   const agregar = () => {
     $('#btnAgregar').on('click', function(){
-      // Setear un título a modal
       $('#modalTitle').text("Agregar Persona");
-      // inicia ventana modal
       $('#txtIdPersona').val("");
-      $('#txtDescripcion').val("");
+      $('#txtNombre').val(""); // Limpiar campo nombre
+      $('#txtApellido').val(""); // Limpiar campo apellido
+      $('#txtTelefono').val("");
+      $('#txtCorreo').val("");
+      $('#txtDireccion').val("");
       $('#modalFormulario').modal();
     });
   }
@@ -103,7 +127,11 @@ Persona
   const guardar = () => {
     $('#btnGuardar').on('click', function() {
       const idPersona = $('#txtIdPersona').val();
-      const nuevaDescripcion = $('#txtDescripcion').val();
+      const nuevoNombre = $('#txtNombre').val(); // Obtener nombre
+      const nuevoApellido = $('#txtApellido').val(); // Obtener apellido
+      const nuevoTelefono = $('#txtTelefono').val();
+      const nuevoCorreo = $('#txtCorreo').val();
+      const nuevaDireccion = $('#txtDireccion').val();
       const tabla = $('#tbl').DataTable();
 
       if(idPersona) {
@@ -112,7 +140,7 @@ Persona
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
+          }, body: JSON.stringify({ nombre: nuevoNombre, apellido: nuevoApellido, telefono: nuevoTelefono, correo: nuevoCorreo, direccion: nuevaDireccion }) // Incluir nombre y apellido
         })
         .then(resp => resp.json())
         .then(data => {
@@ -132,13 +160,13 @@ Persona
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
+          }, body: JSON.stringify({ nombre: nuevoNombre, apellido: nuevoApellido, telefono: nuevoTelefono, correo: nuevoCorreo, direccion: nuevaDireccion }) // Incluir nombre y apellido
         })
         .then(resp => resp.json())
         .then(data => {
           if(data && !data.error && data.success) {
             tabla.ajax.reload();
-            Swal.fire("Actualizado", "La persona ha sido agregada correctamente.", "success");
+            Swal.fire("Agregado", "La persona ha sido agregada correctamente.", "success");
           } else {
             Swal.fire(data.error);
           }
@@ -147,14 +175,17 @@ Persona
           Swal.fire("Error", "Ocurrió un error al guardar persona.", "error");
         });
       }
-      $('#txtDescripcion').val("");
+      $('#txtNombre').val(""); // Limpiar campo nombre
+      $('#txtApellido').val(""); // Limpiar campo apellido
+      $('#txtTelefono').val("");
+      $('#txtCorreo').val("");
+      $('#txtDireccion').val("");
       $('#modalFormulario').modal("hide");
     });
   }
 
   const editar = () => {
     $('#tbl').on('click', 'button[name="btn_editar"]',function(){
-      // Mostrar mensaje de confirmación usando sweetalert
       Swal.fire({
         title: "¿Deseas editar este registro?",
         showCancelButton: true,
@@ -162,13 +193,11 @@ Persona
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          //Swal.fire("Saved!", "", "success");
           $('#modalTitle').text("Editar Persona");
 
           const idPersona = $(this).data('id');
           $('#txtIdPersona').val(idPersona);
 
-          // Necesitamos obtener la descripción del backend
           fetch(`/api/v1/personas/${idPersona}`, {
             method: 'GET',
             headers: {
@@ -177,7 +206,11 @@ Persona
           })
           .then(resp => resp.json())
           .then(data => {
-            $('#txtDescripcion').val(data.data.descripcion);
+            $('#txtNombre').val(data.data.nombre); // Obtener nombre
+            $('#txtApellido').val(data.data.apellido); // Obtener apellido
+            $('#txtTelefono').val(data.data.telefono);
+            $('#txtCorreo').val(data.data.correo);
+            $('#txtDireccion').val(data.data.direccion);
             $('#modalFormulario').modal();
           });
         }
@@ -188,7 +221,6 @@ Persona
   const eliminar = () => {
     $('#tbl').on('click', 'button[name="btn_eliminar"]',function(){
       const idPersona = $(this).data('id');
-      // Mostrar mensaje de confirmación usando sweetalert
       Swal.fire({
         title: "¿Deseas eliminar este registro?",
         showCancelButton: true,
@@ -205,11 +237,10 @@ Persona
           .then(resp => resp.json())
           .then(data => {
             if(data && !data.error && data.success) {
-              // Para borrar la fila del datatable(cliente)
-              const fila =$(this).closest('tr');
+              const fila = $(this).closest('tr');
               const tabla = $('#tbl').DataTable();
               tabla.row(fila).remove().draw();
-              Swal.fire("Eliminado", "", data.success);
+              Swal.fire("Eliminado", "", "success");
             } else {
               Swal.fire(data.error);
             }
@@ -218,7 +249,6 @@ Persona
           });
         }
       });
-
     });
   }
 
