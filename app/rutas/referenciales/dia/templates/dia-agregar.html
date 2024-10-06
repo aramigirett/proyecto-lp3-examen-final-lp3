@@ -1,24 +1,49 @@
 {% extends 'base.html' %}
 
 {% block titulo %}
-Formulario Agregar
+Formulario Agregar Día de la Semana
 {% endblock %}
 
 {% block contenido %}
-<form action="/action_page.php">
+<form id="diaForm" action="/dias" method="POST" onsubmit="return validarFormulario()">
+    <!-- Campo de correo electrónico -->
     <div class="form-group">
         <label for="email">Email address:</label>
-        <input type="email" class="form-control" placeholder="Enter email" id="email">
+        <input type="email" class="form-control" placeholder="Enter email" id="email" required>
     </div>
+    
+    <!-- Campo de contraseña -->
     <div class="form-group">
         <label for="pwd">Password:</label>
-        <input type="password" class="form-control" placeholder="Enter password" id="pwd">
+        <input type="password" class="form-control" placeholder="Enter password" id="pwd" required>
     </div>
+    
+    <!-- Campo de selección para los días de la semana -->
+    <div class="form-group">
+        <label for="dia">Seleccione un día de la semana:</label>
+        <select class="form-control" id="dia" name="descripcion" required>
+            <option value="">Seleccione un día</option>
+            <option value="LUNES">Lunes</option>
+            <option value="MARTES">Martes</option>
+            <option value="MIÉRCOLES">Miércoles</option>
+            <option value="JUEVES">Jueves</option>
+            <option value="VIERNES">Viernes</option>
+            <option value="SÁBADO">Sábado</option>
+            <option value="DOMINGO">Domingo</option>
+        </select>
+        <div class="invalid-feedback" id="feedbackDia">
+            Por favor, seleccione un día válido.
+        </div>
+    </div>
+    
+    <!-- Campo de checkbox de 'Remember me' -->
     <div class="form-group form-check">
         <label class="form-check-label">
             <input class="form-check-input" type="checkbox"> Remember me
         </label>
     </div>
+    
+    <!-- Botón de enviar -->
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}
