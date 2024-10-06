@@ -17,6 +17,8 @@ from app.rutas.referenciales.diagnostico.diagnostico_routes import diagmod  # di
 from app.rutas.referenciales.duracion_consulta.duracion_consulta_routes import duraconsumod  #duracion de la consulta
 from app.rutas.referenciales.instrumento.instrumento_routes import instmod  #instrumento utilizado
 from app.rutas.referenciales.turno.turno_routes import turmod  #turno
+from app.rutas.referenciales.historia_clinica.historiaclinica_routes import hiscmod
+
 
 # registrar referenciales
 modulo0 = '/referenciales'
@@ -34,6 +36,8 @@ app.register_blueprint(diagmod, url_prefix=f'{modulo0}/diagnostico')  # diagnost
 app.register_blueprint(duraconsumod, url_prefix=f'{modulo0}/duracionconsulta') #duracion de la consulta
 app.register_blueprint(instmod, url_prefix=f'{modulo0}/instrumento') #instrumento utilizado
 app.register_blueprint(turmod, url_prefix=f'{modulo0}/turno') #turno
+app.register_blueprint(hiscmod, url_prefix=f'{modulo0}/historiaclinica') #historia clinica
+
 
 #ciudad
 from app.rutas.referenciales.ciudad.ciudad_api import ciuapi
@@ -76,6 +80,10 @@ from app.rutas.referenciales.instrumento.instrumento_api import instapi
 
 #turno
 from app.rutas.referenciales.turno.turno_api import turnoapi
+
+#historia clinica
+from app.rutas.referenciales.historia_clinica.historiaclinica_api import histocliapi
+
 
 # APIS v1
 #Ciudad
@@ -133,3 +141,7 @@ app.register_blueprint(instapi, url_prefix=version1)
 #turno
 version1 = '/api/v1'
 app.register_blueprint(turnoapi, url_prefix=version1)
+
+#Historia Clinica
+version1 = '/api/v1'
+app.register_blueprint(histocliapi, url_prefix=version1)
