@@ -1,5 +1,6 @@
 from flask import Flask
 
+
 app = Flask(__name__)
 
 # importar referenciales
@@ -145,3 +146,7 @@ app.register_blueprint(turnoapi, url_prefix=version1)
 #Historia Clinica
 version1 = '/api/v1'
 app.register_blueprint(histocliapi, url_prefix=version1)
+
+
+
+
