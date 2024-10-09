@@ -3,6 +3,10 @@ from app.dao.referenciales.turno.TurnoDao import TurnoDao
 
 turnoapi = Blueprint('turnoapi', __name__)
 
+# Lista de turnos validos
+TURNOS_VALIDOS= ['MAÑANA', 'TARDE', 'NOCHE']
+
+
 # Trae todos los turnos
 @turnoapi.route('/turnos', methods=['GET'])
 def getTurnos():
@@ -69,6 +73,15 @@ def addTurno():
 
     try:
         descripcion = data['descripcion'].upper()
+ 
+        # Validar si el TURNO está en la lista de TURNOS válidos
+        if descripcion not in TURNOS_VALIDOS:
+            return jsonify({
+                'success': False,
+                'error': 'Turno inválido. Solo se permiten Turnos de Mañana, Tarde y Noche.'
+            }), 400
+
+
         turno_id = turnodao.guardarTurno(descripcion)
         if turno_id is not None:
             return jsonify({
@@ -101,6 +114,14 @@ def updateTurno(turno_id):
                             'error': f'El campo {campo} es obligatorio y no puede estar vacío.'
                             }), 400
     descripcion = data['descripcion']
+
+    # Validar si el TURNO está en la lista de TURNOS válidos
+    if descripcion not in TURNOS_VALIDOS:
+            return jsonify({
+                'success': False,
+                'error': 'Turno inválido. Solo se permiten Turnos de Mañana, Tarde y Noche.'
+            }), 400
+
     try:
         if turnodao.updateTurno(turno_id, descripcion.upper()):
             return jsonify({

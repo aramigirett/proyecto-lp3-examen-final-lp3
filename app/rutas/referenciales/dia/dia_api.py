@@ -4,7 +4,7 @@ from app.dao.referenciales.dia.DiaDao import DiaDao
 diaapi = Blueprint('diaapi', __name__)
 
 # Solo aceptar días de lunes a viernes
-DIAS_VALIDOS = ['LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES']
+DIAS_VALIDOS = ['LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES']
 
 # Trae todos los días
 @diaapi.route('/dias', methods=['GET'])
@@ -77,7 +77,7 @@ def addDia():
         if descripcion not in DIAS_VALIDOS:
             return jsonify({
                 'success': False,
-                'error': 'Día inválido. Solo se permiten días de lunes a viernes.'
+                'error': 'Día inválido. Solo se permiten días de la semana.'
             }), 400
 
         dia_id = diadao.guardarDia(descripcion)
