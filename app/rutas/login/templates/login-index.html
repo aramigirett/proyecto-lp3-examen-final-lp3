@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #6f069f, #076c88, #20a3d3, #383991);  /* Color de fondo de la página */
+            background: linear-gradient(135deg, #1c79c4, #338783, #2082d3, #38918d);  /* Color de fondo de la página */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,7 +18,7 @@
             margin: 0;
         }
         .login-container {
-            background: linear-gradient(135deg, #d7c5d3, #e142a9);  /* Degradado de colores turquesa y azul */
+            background: linear-gradient(135deg, #38B2AC, #4299E1);  /* Degradado de colores turquesa y azul */
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);  /* Sombra */
@@ -36,14 +36,14 @@
             width: 95%;
             padding: 8px;
             margin: 10px 0;
-            border: 1px solid #cccccc;
+            border: 1px solid #ccc;
             border-radius: 8px;
         }
 
         .login-container input[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #14a2ac;
+            background-color: #0d5486;
             color: white;
             border: none;
             border-radius: 7px;
@@ -51,7 +51,7 @@
         }
 
         .login-container input[type="submit"]:hover {
-            background-color: #13b3ad;
+            background-color: #0c3756;
         }
 
         .login-container .message {
@@ -64,7 +64,7 @@
     <div class="login-container">
         <h2>Iniciar Sesión</h2>
 
-        <form action="{{ url_for('vista') }}" method="POST" onsubmit="return redirectToPage();">
+        <form action="{{ url_for('login.login') }}"  method="POST"  onsubmit="return validarCredenciales();">
             <label for="username">Usuario:</label>
             <input type="text" id="username" name="username" placeholder="Ingresa tu usuario" required>
 
@@ -73,14 +73,40 @@
 
             <input type="submit" value="Iniciar Sesión">
         </form>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+        <script>
+            function validarCredenciales() {
+                // Definir usuario y contraseña correctos
+                const usuarioCorrecto = "ARAMI GIRETT";
+                const contrasenaCorrecta = "15dediciembre";
+
+                // Obtener valores ingresados
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                // Validar credenciales
+                if (username === usuarioCorrecto && password === contrasenaCorrecta) { 
+                    // Redirigir a otra página si es necesario
+                    window.location.href = "{{ url_for('vista.vistaIndex') }}";
+                } else {
+                    alert("Usuario o contraseña incorrectos.");
+                }
+
+                return false; // Evita el envío del formulario
+            }
+        </script>
+    </div>
+</body>
+</html>
     
-    <script>
+    <!-- <script>
         function redirectToPage() {
             // Aquí puedes poner la URL a la que deseas redirigir
             window.location.href = "{{ url_for('vista.vistaIndex') }}"; // Reemplaza 'nueva_pagina' por la ruta deseada
             return false; // Evita el envío del formulario
         }
-    </script>
+    </script> -->
  </div>
 
 </body>
