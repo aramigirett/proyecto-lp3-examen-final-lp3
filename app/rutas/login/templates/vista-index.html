@@ -9,6 +9,126 @@
     <!-- Mostrar la imagen en el contenido -->
     <img src="{{ url_for('static', filename='img/miimagencita.jpg') }}" alt="Mi imagen" style="width: 100%; height:auto;">
 </div>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Documentos Médicos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 60%;
+            margin: 0 auto;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            flex: 2;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .btn {
+            display: block;
+            width: 100px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Documentos Relacionados con la Ficha del Paciente</h2>
+        
+        <form action="/ruta_de_registro_documento" method="POST" enctype="multipart/form-data">
+            <!-- Información del Paciente -->
+            <div class="form-group">
+                <label for="id_paciente">ID del Paciente:</label>
+                <input type="text" id="id_paciente" name="id_paciente" oninput="obtenerDatosPaciente()" required>
+            </div>
+            
+            <!-- Nombre del Paciente (Autocompletado) -->
+            <div class="form-group">
+                <label for="nombre_paciente">Nombre del Paciente:</label>
+                <input type="text" id="nombre_paciente" name="nombre_paciente" readonly>
+            </div>
+
+            <!-- Tipo de Documento -->
+            <div class="form-group">
+                <label for="tipo_documento">Tipo de Documento:</label>
+                <select id="tipo_documento" name="tipo_documento" required>
+                    <option value="informe_psicologico">Informe Psicológico</option>
+                    <option value="test_psicologico">Test Psicológico</option>
+                    <option value="evaluacion_clinica">Evaluación Clínica</option>
+                </select>
+            </div>
+            
+            <!-- Descripción -->
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+            </div>
+            
+            <!-- Subir Archivo -->
+            <div class="form-group">
+                <label for="archivo">Subir Archivo:</label>
+                <input type="file" id="archivo" name="archivo" required>
+            </div>
+            
+            <!-- Fecha de Subida -->
+            <div class="form-group">
+                <label for="fecha_subida">Fecha de Subida:</label>
+                <input type="date" id="fecha_subida" name="fecha_subida" required>
+            </div>
+            
+            <!-- Botón Guardar -->
+            <a href="#" class="btn">Guardar</a>
+        </form>
+    </div>
+
+    <script>
+        function obtenerDatosPaciente() {
+            const idPaciente = document.getElementById("id_paciente").value;
+            const nombrePacienteInput = document.getElementById("nombre_paciente");
+
+            if (idPaciente) {
+                // Llamada AJAX para obtener la información del paciente
+                fetch(`/obtener_paciente?id=${idPaciente}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.nombre) {
+                            nombrePacienteInput.value = data.nombre;
+                        } else {
+                            nombrePacienteInput.value = "Paciente no encontrado";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al obtener datos del paciente:", error);
+                        nombrePacienteInput.value = "Error al obtener información";
+                    });
+            } else {
+                nombrePacienteInput.value = ""; // Limpiar si no hay ID ingresado
+            }
+        }
+    </script>
+</body>
+</html>
+
 {% endblock %}
 
 <style>

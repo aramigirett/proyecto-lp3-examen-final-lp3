@@ -23,6 +23,10 @@ from app.rutas.referenciales.turno.turno_routes import turmod  #turno
 from app.rutas.referenciales.historia_clinica.historiaclinica_routes import hiscmod
 
 
+# Importar rutas de usuario
+from app.rutas.agendamientos.cita.cita_routes import citamod   # Cita
+
+
 # registrar referenciales
 modulo0 = '/referenciales'
 app.register_blueprint(loginmod, url_prefix=f'{modulo0}/login') 
@@ -42,6 +46,10 @@ app.register_blueprint(duraconsumod, url_prefix=f'{modulo0}/duracionconsulta') #
 app.register_blueprint(instmod, url_prefix=f'{modulo0}/instrumento') #instrumento utilizado
 app.register_blueprint(turmod, url_prefix=f'{modulo0}/turno') #turno
 app.register_blueprint(hiscmod, url_prefix=f'{modulo0}/historiaclinica') #historia clinica
+
+#agendamiento
+modulo0 = '/agendamientos'
+app.register_blueprint(citamod, url_prefix=f'{modulo0}/cita')  # cita
 
 
 #ciudad
@@ -88,6 +96,10 @@ from app.rutas.referenciales.turno.turno_api import turnoapi
 
 #historia clinica
 from app.rutas.referenciales.historia_clinica.historiaclinica_api import histocliapi
+
+#agendamiento
+from app.rutas.agendamientos.cita.cita_api import citaapi
+
 
 
 # APIS v1
@@ -151,6 +163,9 @@ app.register_blueprint(turnoapi, url_prefix=version1)
 version1 = '/api/v1'
 app.register_blueprint(histocliapi, url_prefix=version1)
 
+#agendamiento
+version1 = '/api/v1'
+app.register_blueprint(citaapi, url_prefix=version1)
 
 
 
