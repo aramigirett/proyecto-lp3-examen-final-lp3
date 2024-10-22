@@ -18,6 +18,10 @@ from app.rutas.referenciales.duracion_consulta.duracion_consulta_routes import d
 from app.rutas.referenciales.instrumento.instrumento_routes import instmod  #instrumento utilizado
 from app.rutas.referenciales.turno.turno_routes import turmod  #turno
 
+# importar gestionar compras
+from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedidos_compras_routes \
+    import pdcmod
+
 # registrar referenciales
 modulo0 = '/referenciales'
 app.register_blueprint(ciumod, url_prefix=f'{modulo0}/ciudad') #ciudad
@@ -34,6 +38,10 @@ app.register_blueprint(diagmod, url_prefix=f'{modulo0}/diagnostico')  # diagnost
 app.register_blueprint(duraconsumod, url_prefix=f'{modulo0}/duracionconsulta') #duracion de la consulta
 app.register_blueprint(instmod, url_prefix=f'{modulo0}/instrumento') #instrumento utilizado
 app.register_blueprint(turmod, url_prefix=f'{modulo0}/turno') #turno
+
+# registro de modulos - gestionar compras
+modulo1 = '/gestionar-compras'
+app.register_blueprint(pdcmod, url_prefix=f'{modulo1}/registrar-pedido-compras')
 
 #ciudad
 from app.rutas.referenciales.ciudad.ciudad_api import ciuapi
@@ -76,6 +84,11 @@ from app.rutas.referenciales.instrumento.instrumento_api import instapi
 
 #turno
 from app.rutas.referenciales.turno.turno_api import turnoapi
+
+#pedido de compra
+from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedido_compras_api \
+    import pdcapi
+
 
 # APIS v1
 #Ciudad
@@ -133,3 +146,8 @@ app.register_blueprint(instapi, url_prefix=version1)
 #turno
 version1 = '/api/v1'
 app.register_blueprint(turnoapi, url_prefix=version1)
+
+
+# Gestionar compras API
+apiversion1 = '/api/v1'
+app.register_blueprint(pdcapi, url_prefix=f'{apiversion1}/{modulo1}/registrar-pedido-compras')
