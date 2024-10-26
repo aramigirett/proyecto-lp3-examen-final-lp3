@@ -9,7 +9,7 @@ app.secret_key = 'clave_secreta'
 
 # Usuario y contraseña predefinidos
 USUARIO_CORRECTO = "ARAMI GIRETT"
-CONTRASENA_CORRECTA = "15dediciembre"
+CONTRASENA_CORRECTA = "1"
 
 @loginmod.route('/login', methods=['GET', 'POST'])
 def login():
