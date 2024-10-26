@@ -2,22 +2,18 @@
 from flask import current_app as app
 from app.conexion.Conexion import Conexion
 
-class SucursalDao:
+class ProductoDao:
 
-    def get_sucursales(self):
+    def get_productos(self):
 
         sucursal_sql = """
         SELECT
-            s.id_sucursal,
-            s.descripcion AS nombre_sucursal
+            id_producto
+            , nombre
+            , cantidad
+            , precio_unitario
         FROM
-            sucursales s
-        WHERE
-            EXISTS (
-                SELECT 1
-                FROM sucursal_depositos sd
-                WHERE sd.id_sucursal = s.id_sucursal
-            )
+            public.productos
         """
         # objeto conexion
         conexion = Conexion()
@@ -25,13 +21,14 @@ class SucursalDao:
         cur = con.cursor()
         try:
             cur.execute(sucursal_sql)
-            sucursales = cur.fetchall() # trae datos de la bd
+            productos = cur.fetchall() # trae datos de la bd
 
             # Transformar los datos en una lista de diccionarios
-            return [{'id': sucursal[0], 'descripcion': sucursal[1]} for sucursal in sucursales]
+            return [{'id_producto': item[0], 'nombre': item[1]\
+                , 'cantidad': item[2], 'precio_unitario': item[3]} for item in productos]
 
         except Exception as e:
-            app.logger.error(f"Error al obtener todas las sucursales: {str(e)}")
+            app.logger.error(f"Error al obtener todas las productos: {str(e)}")
             return []
 
         finally:

@@ -86,6 +86,7 @@ from app.rutas.referenciales.instrumento.instrumento_api import instapi
 from app.rutas.referenciales.turno.turno_api import turnoapi
 
 #pedido de compra
+from app.rutas.referenciales.sucursal.sucursal_api import sucapi
 from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedido_compras_api \
     import pdcapi
 
@@ -147,6 +148,7 @@ app.register_blueprint(instapi, url_prefix=version1)
 version1 = '/api/v1'
 app.register_blueprint(turnoapi, url_prefix=version1)
 
+app.register_blueprint(sucapi, url_prefix=version1)
 
 # Gestionar compras API
 apiversion1 = '/api/v1'
