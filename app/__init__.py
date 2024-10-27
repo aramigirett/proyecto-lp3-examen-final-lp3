@@ -25,6 +25,9 @@ from app.rutas.referenciales.historia_clinica.historiaclinica_routes import hisc
 
 # Importar rutas de usuario
 from app.rutas.agendamientos.cita.cita_routes import citamod   # Cita
+from app.rutas.agendamientos.paciente.paciente_routes import paciemod
+from app.rutas.agendamientos.consulta.consulta_routes import consumod
+from app.rutas.agendamientos.vistaAGENDAR.vistaAGENDAR_routes import vistagendamod
 
 
 # registrar referenciales
@@ -50,6 +53,9 @@ app.register_blueprint(hiscmod, url_prefix=f'{modulo0}/historiaclinica') #histor
 #agendamiento
 modulo0 = '/agendamientos'
 app.register_blueprint(citamod, url_prefix=f'{modulo0}/cita')  # cita
+app.register_blueprint(paciemod, url_prefix=f'{modulo0}/cita')  # cita
+app.register_blueprint(consumod, url_prefix=f'{modulo0}/cita')  # cita
+app.register_blueprint(vistagendamod, url_prefix=f'{modulo0}/cita')  # cita
 
 
 #ciudad
