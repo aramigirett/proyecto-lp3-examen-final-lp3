@@ -189,27 +189,3 @@ def vista():
 
 
 
-
-# app.py
-from flask import Flask, render_template, request, redirect, url_for
-from rutas.agendamientos.controllers.agendamientos_controller import registrar_paciente, mostrar_calendario
-
-app = Flask(__name__)
-
-# Ruta para mostrar el calendario con citas
-@app.route('/agendamientos')
-def calendario():
-    citas = mostrar_calendario()
-    return render_template("vistagendar/vistagendar-index.html", citas=citas)
-
-# Ruta para mostrar el formulario de registro de paciente
-@app.route('/agendamientos/registrar_paciente', methods=['GET'])
-def formulario_paciente():
-    return render_template("vistagendar/registrar_paciente.html")
-
-# Ruta para procesar los datos del formulario de paciente
-@app.route('/agendamientos/registrar_paciente', methods=['POST'])
-def registrar_paciente_route():
-    data = request.form.to_dict()
-    registrar_paciente(data)
-    return redirect(url_for('calendario'))
