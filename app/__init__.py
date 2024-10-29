@@ -149,10 +149,7 @@ app.register_blueprint(turnoapi, url_prefix=version1)
 
 
 
-apiversion1 = '/api/v1'
-app.register_blueprint(ciuapi, url_prefix=apiversion1)
-app.register_blueprint(sucapi, url_prefix=apiversion1)
-
 # Gestionar compras API
+apiversion1 = '/api/v1'
 app.register_blueprint(pdcapi, url_prefix=f'{apiversion1}/{modulo1}/registrar-pedido-compras')
-
+app.register_blueprint(sucapi, url_prefix=apiversion1)
