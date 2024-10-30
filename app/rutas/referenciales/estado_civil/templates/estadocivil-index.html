@@ -75,12 +75,12 @@ Estados Civiles
       language: {
         url: "{{ url_for('static', filename='vendor/datatables/es-ES.json') }}",
       },
-      ajax:'/api/v1/estadocivil',
+      ajax: '/api/v1/estadocivil',
       columns: [
         { data: 'estado_civil' },
         { data: function(row) {
-            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-estado_civil_id="${row.estado_civil_id}">Editar</button>
-                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-estado_civil_id="${row.estado_civil_id}">Eliminar</button>`;
+            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-id="${row.id}">Editar</button>
+                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id}">Eliminar</button>`;
           }
         }
       ]
@@ -98,17 +98,18 @@ Estados Civiles
 
   const guardar = () => {
     $('#btnGuardar').on('click', function() {
-      const estado_civil_id = $('#txtEstadoCivilId').val();
+      const id = $('#txtEstadoCivilId').val();
       const nuevoEstadoCivil = $('#txtEstadoCivil').val();
       const tabla = $('#tbl').DataTable();
 
-      if(estado_civil_id) {
+      if(id) {
         // update
-        fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
+        fetch(`/api/v1/estadocivil/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
+          },
+          body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
         })
         .then(resp => resp.json())
         .then(data => {
@@ -128,7 +129,8 @@ Estados Civiles
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
+          },
+          body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
         })
         .then(resp => resp.json())
         .then(data => {
@@ -149,7 +151,7 @@ Estados Civiles
   }
 
   const editar = () => {
-    $('#tbl').on('click', 'button[name="btn_editar"]',function(){
+    $('#tbl').on('click', 'button[name="btn_editar"]', function(){
       Swal.fire({
         title: "¿Deseas editar este registro?",
         showCancelButton: true,
@@ -159,10 +161,10 @@ Estados Civiles
         if (result.isConfirmed) {
           $('#modalTitle').text("Editar Estado Civil");
 
-          const estado_civil_id = $(this).data('estado_civil_id');
-          $('#txtEstadoCivilId').val(estado_civil_id);
+          const id = $(this).data('id');
+          $('#txtEstadoCivilId').val(id);
 
-          fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
+          fetch(`/api/v1/estadocivil/${id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -179,8 +181,8 @@ Estados Civiles
   }
 
   const eliminar = () => {
-    $('#tbl').on('click', 'button[name="btn_eliminar"]',function(){
-      const estado_civil_id = $(this).data('estado_civil_id');
+    $('#tbl').on('click', 'button[name="btn_eliminar"]', function(){
+      const id = $(this).data('id');
       Swal.fire({
         title: "¿Deseas eliminar este registro?",
         showCancelButton: true,
@@ -188,7 +190,7 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
+          fetch(`/api/v1/estadocivil/${id}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -200,7 +202,7 @@ Estados Civiles
               const fila = $(this).closest('tr');
               const tabla = $('#tbl').DataTable();
               tabla.row(fila).remove().draw();
-              Swal.fire("Eliminado", "", data.success);
+              Swal.fire("Eliminado", "El registro ha sido eliminado correctamente.", "success");
             } else {
               Swal.fire(data.error);
             }

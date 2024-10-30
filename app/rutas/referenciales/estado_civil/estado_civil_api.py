@@ -27,12 +27,12 @@ def getEstadosCiviles():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:estado_civil_id>', methods=['GET'])
-def getEstadoCivil(estado_civil_id):
+@estacivapi.route('/estadocivil/<int:id>', methods=['GET'])
+def getEstadoCivil(id):
     estacivdao = EstadoCivilDao()
 
     try:
-        estado_civil = estacivdao.getEstadoCivilById(estado_civil_id)
+        estado_civil = estacivdao.getEstadoCivilById(id)
 
         if estado_civil:
             return jsonify({
@@ -80,11 +80,11 @@ def addEstadoCivil():
         }), 400
 
     try:
-        estado_civil_id = estacivdao.guardarEstadoCivil(estado_civil)
-        if estado_civil_id is not None:
+        id = estacivdao.guardarEstadoCivil(estado_civil)
+        if id is not None:
             return jsonify({
                 'success': True,
-                'data': {'estado_civil_id': estado_civil_id, 'estado_civil': estado_civil},
+                'data': {'id': id, 'estado_civil': estado_civil},
                 'error': None
             }), 201
         else:
@@ -96,8 +96,8 @@ def addEstadoCivil():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:estado_civil_id>', methods=['PUT'])
-def updateEstadoCivil(estado_civil_id):
+@estacivapi.route('/estadocivil/<int:id>', methods=['PUT'])
+def updateEstadoCivil(id):
     data = request.get_json()
     estacivdao = EstadoCivilDao()
 
@@ -122,10 +122,10 @@ def updateEstadoCivil(estado_civil_id):
         }), 400
 
     try:
-        if estacivdao.updateEstadoCivil(estado_civil_id, estado_civil):
+        if estacivdao.updateEstadoCivil(id, estado_civil):
             return jsonify({
                 'success': True,
-                'data': {'estado_civil_id': estado_civil_id, 'estado_civil': estado_civil},
+                'data': {'id': id, 'estado_civil': estado_civil},
                 'error': None
             }), 200
         else:
@@ -140,16 +140,16 @@ def updateEstadoCivil(estado_civil_id):
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:estado_civil_id>', methods=['DELETE'])
-def deleteEstadoCivil(estado_civil_id):
+@estacivapi.route('/estadocivil/<int:id>', methods=['DELETE'])
+def deleteEstadoCivil(id):
     estacivdao = EstadoCivilDao()
 
     try:
         # Usar el retorno de deleteEstadoCivil para determinar el éxito
-        if estacivdao.deleteEstadoCivil(estado_civil_id):
+        if estacivdao.deleteEstadoCivil(id):
             return jsonify({
                 'success': True,
-                'mensaje': f'Estado Civil con ID {estado_civil_id} eliminada correctamente.',
+                'mensaje': f'Estado Civil con ID {id} eliminada correctamente.',
                 'error': None
             }), 200
         else:
