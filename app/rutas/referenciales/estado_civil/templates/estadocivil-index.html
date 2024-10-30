@@ -17,7 +17,7 @@ Estados Civiles
         <table class="table table-striped" id="tbl">
           <thead>
             <tr>
-              <th>Descripción</th>
+              <th>Estado Civil</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -29,7 +29,6 @@ Estados Civiles
 
     <!-- El formulario -->
     <div class="modal" id="modalFormulario">
-      <!-- La clase modal-dialog-centered centra el modal -->
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
@@ -43,8 +42,8 @@ Estados Civiles
           <div class="modal-body">
             <div class="form-group">
               <input type="hidden" id="txtIdEstadoCivil">
-              <label for="txtDescripcion">Descripción:</label>
-              <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtDescripcion">
+              <label for="txtEstadoCivil">Estado Civil:</label>
+              <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtEstadoCivil">
             </div>
           </div>
 
@@ -79,10 +78,10 @@ Estados Civiles
       },
       ajax:'/api/v1/estadocivil',
       columns: [
-        { data: 'descripcion' },
+        { data: 'estado_civil' },
         { data: function(row) {
-            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-id="${row.id}">Editar</button>
-                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id}">Eliminar</button>`
+            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-id="${row.id_estado_civil}">Editar</button>
+                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id_estado_civil}">Eliminar</button>`
           }
         }
       ]
@@ -91,34 +90,32 @@ Estados Civiles
 
   const agregar = () => {
     $('#btnAgregar').on('click', function(){
-      // Setear un título a modal
       $('#modalTitle').text("Agregar Estado Civil");
-      // inicia ventana modal
       $('#txtIdEstadoCivil').val("");
-      $('#txtDescripcion').val("");
+      $('#txtEstadoCivil').val("");
       $('#modalFormulario').modal();
     });
   }
 
   const guardar = () => {
     $('#btnGuardar').on('click', function() {
-      const idEstadoCivil = $('#txtIdEstadoCivil').val();
-      const nuevaDescripcion = $('#txtDescripcion').val();
+      const id_estado_civil = $('#txtIdEstadoCivil').val();
+      const nuevoEstadoCivil = $('#txtEstadoCivil').val();
       const tabla = $('#tbl').DataTable();
 
-      if(idEstadoCivil) {
+      if(id_estado_civil) {
         // update
-        fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
+        fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
+          }, body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
         })
         .then(resp => resp.json())
         .then(data => {
           if(data && !data.error && data.success) {
             tabla.ajax.reload();
-            Swal.fire("Actualizado", "El Estado Civil ha sido actualizada correctamente.", "success");
+            Swal.fire("Actualizado", "El Estado Civil ha sido actualizado correctamente.", "success");
           } else {
             Swal.fire(data.error);
           }
@@ -132,13 +129,13 @@ Estados Civiles
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
+          }, body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
         })
         .then(resp => resp.json())
         .then(data => {
           if(data && !data.error && data.success) {
             tabla.ajax.reload();
-            Swal.fire("Actualizado", "El Estado Civil ha sido agregada correctamente.", "success");
+            Swal.fire("Agregado", "El Estado Civil ha sido agregado correctamente.", "success");
           } else {
             Swal.fire(data.error);
           }
@@ -147,14 +144,13 @@ Estados Civiles
           Swal.fire("Error", "Ocurrió un error al guardar el Estado Civil.", "error");
         });
       }
-      $('#txtDescripcion').val("");
+      $('#txtEstadoCivil').val("");
       $('#modalFormulario').modal("hide");
     });
   }
 
   const editar = () => {
     $('#tbl').on('click', 'button[name="btn_editar"]',function(){
-      // Mostrar mensaje de confirmación usando sweetalert
       Swal.fire({
         title: "¿Deseas editar este registro?",
         showCancelButton: true,
@@ -162,14 +158,12 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          //Swal.fire("Saved!", "", "success");
           $('#modalTitle').text("Editar Estado Civil");
 
-          const idEstadoCivil = $(this).data('id');
-          $('#txtIdEstadoCivil').val(idEstadoCivil);
+          const id_estado_civil = $(this).data('id');
+          $('#txtIdEstadoCivil').val(id_estado_civil);
 
-          // Necesitamos obtener la descripción del backend
-          fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
+          fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -177,7 +171,7 @@ Estados Civiles
           })
           .then(resp => resp.json())
           .then(data => {
-            $('#txtDescripcion').val(data.data.descripcion);
+            $('#txtEstadoCivil').val(data.data.estado_civil);
             $('#modalFormulario').modal();
           });
         }
@@ -187,8 +181,7 @@ Estados Civiles
 
   const eliminar = () => {
     $('#tbl').on('click', 'button[name="btn_eliminar"]',function(){
-      const idEstadoCivil = $(this).data('id');
-      // Mostrar mensaje de confirmación usando sweetalert
+      const id_estado_civil = $(this).data('id');
       Swal.fire({
         title: "¿Deseas eliminar este registro?",
         showCancelButton: true,
@@ -196,7 +189,7 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
+          fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -205,7 +198,6 @@ Estados Civiles
           .then(resp => resp.json())
           .then(data => {
             if(data && !data.error && data.success) {
-              // Para borrar la fila del datatable(cliente)
               const fila =$(this).closest('tr');
               const tabla = $('#tbl').DataTable();
               tabla.row(fila).remove().draw();

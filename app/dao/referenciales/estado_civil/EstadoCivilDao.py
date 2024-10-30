@@ -1,25 +1,22 @@
-# Data access object - DAO
 from flask import current_app as app
 from app.conexion.Conexion import Conexion
 
 class EstadoCivilDao:
 
     def getEstadosCiviles(self):
-
         estadocivilSQL = """
-        SELECT id, descripcion
+        SELECT id_estado_civil, estado_civil
         FROM estado_civil
         """
-        # objeto conexion
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
         try:
             cur.execute(estadocivilSQL)
-            estadosciviles = cur.fetchall() # trae datos de la bd
+            estadosciviles = cur.fetchall()
 
             # Transformar los datos en una lista de diccionarios
-            return [{'id': estadocivil[0], 'descripcion': estadocivil[1]} for estadocivil in estadosciviles]
+            return [{'id_estado_civil': estadocivil[0], 'estado_civil': estadocivil[1]} for estadocivil in estadosciviles]
 
         except Exception as e:
             app.logger.error(f"Error al obtener todos los Estados Civiles: {str(e)}")
@@ -29,26 +26,24 @@ class EstadoCivilDao:
             cur.close()
             con.close()
 
-    def getEstadoCivilById(self, id):
-
+    def getEstadoCivilById(self, id_estado_civil):
         estadocivilSQL = """
-        SELECT id, descripcion
-        FROM estado_civil WHERE id=%s
+        SELECT id_estado_civil, estado_civil
+        FROM estado_civil WHERE id_estado_civil=%s
         """
-        # objeto conexion
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
         try:
-            cur.execute(estadocivilSQL, (id,))
-            estadocivilEncontrada = cur.fetchone() # Obtener una sola fila
+            cur.execute(estadocivilSQL, (id_estado_civil,))
+            estadocivilEncontrada = cur.fetchone()
             if estadocivilEncontrada:
                 return {
-                        "id": estadocivilEncontrada[0],
-                        "descripcion": estadocivilEncontrada[1]
-                    }  # Retornar los datos de los estados civiles
+                    "id_estado_civil": estadocivilEncontrada[0],
+                    "estado_civil": estadocivilEncontrada[1]
+                }
             else:
-                return None # Retornar None si no se encuentra los estados civiles
+                return None
         except Exception as e:
             app.logger.error(f"Error al obtener el estado civil: {str(e)}")
             return None
@@ -57,52 +52,44 @@ class EstadoCivilDao:
             cur.close()
             con.close()
 
-    def guardarEstadoCivil(self, descripcion):
-
+    def guardarEstadoCivil(self, estado_civil):
         insertEstadoCivilSQL = """
-        INSERT INTO estado_civil(descripcion) VALUES(%s) RETURNING id
+        INSERT INTO estado_civil(estado_civil) VALUES(%s) RETURNING id_estado_civil
         """
-
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
 
-        # Ejecucion exitosa
         try:
-            cur.execute(insertEstadoCivilSQL, (descripcion,))
+            cur.execute(insertEstadoCivilSQL, (estado_civil,))
             estadocivil_id = cur.fetchone()[0]
-            con.commit() # se confirma la insercion
+            con.commit()
             return estadocivil_id
 
-        # Si algo fallo entra aqui
         except Exception as e:
             app.logger.error(f"Error al insertar estado civil: {str(e)}")
-            con.rollback() # retroceder si hubo error
+            con.rollback()
             return False
 
-        # Siempre se va ejecutar
         finally:
             cur.close()
             con.close()
 
-    def updateEstadoCivil(self, id, descripcion):
-
+    def updateEstadoCivil(self, id_estado_civil, estado_civil):
         updateEstadoCivilSQL = """
         UPDATE estado_civil
-        SET descripcion=%s
-        WHERE id=%s
+        SET estado_civil=%s
+        WHERE id_estado_civil=%s
         """
-
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
 
         try:
-            cur.execute(updateEstadoCivilSQL, (descripcion, id,))
-            filas_afectadas = cur.rowcount # Obtener el número de filas afectadas
+            cur.execute(updateEstadoCivilSQL, (estado_civil, id_estado_civil))
+            filas_afectadas = cur.rowcount
             con.commit()
-
-            return filas_afectadas > 0 # Retornar True si se actualizó al menos una fila
+            return filas_afectadas > 0
 
         except Exception as e:
             app.logger.error(f"Error al actualizar Estado Civil: {str(e)}")
@@ -113,23 +100,20 @@ class EstadoCivilDao:
             cur.close()
             con.close()
 
-    def deleteEstadoCivil(self, id):
-
-        updateEstadoCivilSQL = """
+    def deleteEstadoCivil(self, id_estado_civil):
+        deleteEstadoCivilSQL = """
         DELETE FROM estado_civil
-        WHERE id=%s
+        WHERE id_estado_civil=%s
         """
-
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
 
         try:
-            cur.execute(updateEstadoCivilSQL, (id,))
+            cur.execute(deleteEstadoCivilSQL, (id_estado_civil,))
             rows_affected = cur.rowcount
             con.commit()
-
-            return rows_affected > 0  # Retornar True si se eliminó al menos una fila
+            return rows_affected > 0
 
         except Exception as e:
             app.logger.error(f"Error al eliminar Estado Civil: {str(e)}")
