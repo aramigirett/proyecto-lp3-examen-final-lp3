@@ -3,9 +3,6 @@ from app.dao.referenciales.estado_civil.EstadoCivilDao import EstadoCivilDao
 
 estacivapi = Blueprint('estacivapi', __name__)
 
-# Lista de valores permitidos para estado_civil
-VALORES_ESTADO_CIVIL_PERMITIDOS = ['Casado/a', 'Soltero/a', 'Divorciado/a', 'Amancebado', 'Concubinato']
-
 # Trae todos los Estados Civiles
 @estacivapi.route('/estadocivil', methods=['GET'])
 def getEstadosCiviles():
@@ -27,12 +24,12 @@ def getEstadosCiviles():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:id>', methods=['GET'])
-def getEstadoCivil(id):
+@estacivapi.route('/estadocivil/<int:id_civil>', methods=['GET'])
+def getEstadoCivil(id_civil):
     estacivdao = EstadoCivilDao()
 
     try:
-        estado_civil = estacivdao.getEstadoCivilById(id)
+        estado_civil = estacivdao.getEstadoCivilById(id_civil)
 
         if estado_civil:
             return jsonify({
@@ -72,19 +69,12 @@ def addEstadoCivil():
 
     estado_civil = data['estado_civil'].capitalize()
 
-    # Validar si el valor está permitido por el CHECK
-    if estado_civil not in VALORES_ESTADO_CIVIL_PERMITIDOS:
-        return jsonify({
-            'success': False,
-            'error': f'El valor "{estado_civil}" no es válido. Debe ser uno de los siguientes: {", ".join(VALORES_ESTADO_CIVIL_PERMITIDOS)}.'
-        }), 400
-
     try:
-        id = estacivdao.guardarEstadoCivil(estado_civil)
-        if id is not None:
+        id_civil = estacivdao.guardarEstadoCivil(estado_civil)
+        if id_civil is not None:
             return jsonify({
                 'success': True,
-                'data': {'id': id, 'estado_civil': estado_civil},
+                'data': {'id_civil': id_civil, 'estado_civil': estado_civil},
                 'error': None
             }), 201
         else:
@@ -96,8 +86,8 @@ def addEstadoCivil():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:id>', methods=['PUT'])
-def updateEstadoCivil(id):
+@estacivapi.route('/estadocivil/<int:id_civil>', methods=['PUT'])
+def updateEstadoCivil(id_civil):
     data = request.get_json()
     estacivdao = EstadoCivilDao()
 
@@ -114,18 +104,11 @@ def updateEstadoCivil(id):
 
     estado_civil = data['estado_civil'].capitalize()
 
-    # Validar si el valor está permitido por el CHECK
-    if estado_civil not in VALORES_ESTADO_CIVIL_PERMITIDOS:
-        return jsonify({
-            'success': False,
-            'error': f'El valor "{estado_civil}" no es válido. Debe ser uno de los siguientes: {", ".join(VALORES_ESTADO_CIVIL_PERMITIDOS)}.'
-        }), 400
-
     try:
-        if estacivdao.updateEstadoCivil(id, estado_civil):
+        if estacivdao.updateEstadoCivil(id_civil, estado_civil):
             return jsonify({
                 'success': True,
-                'data': {'id': id, 'estado_civil': estado_civil},
+                'data': {'id_civil': id_civil, 'estado_civil': estado_civil},
                 'error': None
             }), 200
         else:
@@ -140,16 +123,16 @@ def updateEstadoCivil(id):
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-@estacivapi.route('/estadocivil/<int:id>', methods=['DELETE'])
-def deleteEstadoCivil(id):
+@estacivapi.route('/estadocivil/<int:id_civil>', methods=['DELETE'])
+def deleteEstadoCivil(id_civil):
     estacivdao = EstadoCivilDao()
 
     try:
         # Usar el retorno de deleteEstadoCivil para determinar el éxito
-        if estacivdao.deleteEstadoCivil(id):
+        if estacivdao.deleteEstadoCivil(id_civil):
             return jsonify({
                 'success': True,
-                'mensaje': f'Estado Civil con ID {id} eliminada correctamente.',
+                'mensaje': f'Estado Civil con ID {id_civil} eliminada correctamente.',
                 'error': None
             }), 200
         else:

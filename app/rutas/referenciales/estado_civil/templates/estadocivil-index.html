@@ -8,7 +8,7 @@ Estados Civiles
 <div class="container mt-4">
     <h3>Listar Estado Civil</h3>
 
-    <!-- tarjeta -->
+    <!-- Tarjeta -->
     <div class="card">
         <div class="card-header">
             <button type="button" class="btn btn-outline-primary" id="btnAgregar">Agregar</button>
@@ -25,7 +25,7 @@ Estados Civiles
             </table>
         </div>
     </div>
-    <!-- /tarjeta -->
+    <!-- /Tarjeta -->
 
     <!-- El formulario -->
     <div class="modal" id="modalFormulario">
@@ -103,7 +103,7 @@ Estados Civiles
       const tabla = $('#tbl').DataTable();
 
       if(id) {
-        // update
+        // Actualizar
         fetch(`/api/v1/estadocivil/${id}`, {
           method: 'PUT',
           headers: {
@@ -124,7 +124,7 @@ Estados Civiles
           Swal.fire("Error", "Ocurrió un error al actualizar el Estado Civil.", "error");
         });
       } else {
-        // insert
+        // Insertar
         fetch(`/api/v1/estadocivil`, {
           method: 'POST',
           headers: {
