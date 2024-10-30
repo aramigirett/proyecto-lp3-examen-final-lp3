@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-    
+
 {% block titulo %}
 Estados Civiles
 {% endblock %}
@@ -10,51 +10,51 @@ Estados Civiles
 
     <!-- tarjeta -->
     <div class="card">
-      <div class="card-header">
-        <button type="button" class="btn btn-outline-primary" id="btnAgregar">Agregar</button>
-      </div>
-      <div class="card-body">
-        <table class="table table-striped" id="tbl">
-          <thead>
-            <tr>
-              <th>Estado Civil</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-      </table>
-      </div>
+        <div class="card-header">
+            <button type="button" class="btn btn-outline-primary" id="btnAgregar">Agregar</button>
+        </div>
+        <div class="card-body">
+            <table class="table table-striped" id="tbl">
+                <thead>
+                    <tr>
+                        <th>Estado Civil</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
     <!-- /tarjeta -->
 
     <!-- El formulario -->
     <div class="modal" id="modalFormulario">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title" id="modalTitle"></h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalTitle"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-          <!-- Modal body -->
-          <div class="modal-body">
-            <div class="form-group">
-              <input type="hidden" id="txtIdEstadoCivil">
-              <label for="txtEstadoCivil">Estado Civil:</label>
-              <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtEstadoCivil">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="txtEstadoCivilId">
+                        <label for="txtEstadoCivil">Estado Civil:</label>
+                        <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtEstadoCivil">
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+
             </div>
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-          </div>
-
         </div>
-      </div>
     </div>
 
     <div class="row mt-4 d-none" id="rowAlerta">
@@ -70,7 +70,6 @@ Estados Civiles
 
 {% block js %}
 <script>
-
   const initDatatable = () => {
     $('#tbl').DataTable({
       language: {
@@ -80,8 +79,8 @@ Estados Civiles
       columns: [
         { data: 'estado_civil' },
         { data: function(row) {
-            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-id="${row.id_estado_civil}">Editar</button>
-                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id_estado_civil}">Eliminar</button>`
+            return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-estado_civil_id="${row.estado_civil_id}">Editar</button>
+                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-estado_civil_id="${row.estado_civil_id}">Eliminar</button>`;
           }
         }
       ]
@@ -91,7 +90,7 @@ Estados Civiles
   const agregar = () => {
     $('#btnAgregar').on('click', function(){
       $('#modalTitle').text("Agregar Estado Civil");
-      $('#txtIdEstadoCivil').val("");
+      $('#txtEstadoCivilId').val("");
       $('#txtEstadoCivil').val("");
       $('#modalFormulario').modal();
     });
@@ -99,13 +98,13 @@ Estados Civiles
 
   const guardar = () => {
     $('#btnGuardar').on('click', function() {
-      const id_estado_civil = $('#txtIdEstadoCivil').val();
+      const estado_civil_id = $('#txtEstadoCivilId').val();
       const nuevoEstadoCivil = $('#txtEstadoCivil').val();
       const tabla = $('#tbl').DataTable();
 
-      if(id_estado_civil) {
+      if(estado_civil_id) {
         // update
-        fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
+        fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -125,7 +124,7 @@ Estados Civiles
         });
       } else {
         // insert
-        fetch(`/api/v1/estadosciviles`, {
+        fetch(`/api/v1/estadocivil`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -160,10 +159,10 @@ Estados Civiles
         if (result.isConfirmed) {
           $('#modalTitle').text("Editar Estado Civil");
 
-          const id_estado_civil = $(this).data('id');
-          $('#txtIdEstadoCivil').val(id_estado_civil);
+          const estado_civil_id = $(this).data('estado_civil_id');
+          $('#txtEstadoCivilId').val(estado_civil_id);
 
-          fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
+          fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -181,7 +180,7 @@ Estados Civiles
 
   const eliminar = () => {
     $('#tbl').on('click', 'button[name="btn_eliminar"]',function(){
-      const id_estado_civil = $(this).data('id');
+      const estado_civil_id = $(this).data('estado_civil_id');
       Swal.fire({
         title: "¿Deseas eliminar este registro?",
         showCancelButton: true,
@@ -189,7 +188,7 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/api/v1/estadosciviles/${id_estado_civil}`, {
+          fetch(`/api/v1/estadocivil/${estado_civil_id}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -198,7 +197,7 @@ Estados Civiles
           .then(resp => resp.json())
           .then(data => {
             if(data && !data.error && data.success) {
-              const fila =$(this).closest('tr');
+              const fila = $(this).closest('tr');
               const tabla = $('#tbl').DataTable();
               tabla.row(fila).remove().draw();
               Swal.fire("Eliminado", "", data.success);
@@ -210,7 +209,6 @@ Estados Civiles
           });
         }
       });
-
     });
   }
 
