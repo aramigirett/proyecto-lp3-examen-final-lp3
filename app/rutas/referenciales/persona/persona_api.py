@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app as app
 from app.dao.referenciales.persona.PersonaDao import PersonaDao
 
+
 persapi = Blueprint('persapi', __name__)
 
 # Trae todas las personas
@@ -24,8 +25,6 @@ def getPersonas():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-
-# Trae una persona por ID
 @persapi.route('/personas/<int:persona_id>', methods=['GET'])
 def getPersona(persona_id):
     personadao = PersonaDao()
@@ -52,43 +51,38 @@ def getPersona(persona_id):
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-
 # Agrega una nueva persona
 @persapi.route('/personas', methods=['POST'])
 def addPersona():
     data = request.get_json()
     personadao = PersonaDao()
 
-    # Validar que el JSON tenga los campos requeridos
-    campos_requeridos = ['nombre', 'apellido', 'telefono', 'correo', 'direccion']
+    # Validar que el JSON no esté vacío y tenga las propiedades necesarias
+    campos_requeridos = ['nombre', 'apellido', 'fechanacimiento', 'cedula', 'correo']
 
+    # Verificar si faltan campos o son vacíos
     for campo in campos_requeridos:
         if campo not in data or data[campo] is None or len(data[campo].strip()) == 0:
             return jsonify({
-                'success': False,
-                'error': f'El campo {campo} es obligatorio y no puede estar vacío.'
-            }), 400
+                            'success': False,
+                            'error': f'El campo {campo} es obligatorio y no puede estar vacío.'
+                            }), 400
 
     try:
-        nombre = data['nombre']
-        apellido = data['apellido']
-        telefono = data['telefono']
+        nombre = data['nombre'].upper()
+        apellido = data['apellido'].upper()
+        fechanacimiento = data['fechanacimiento']
+        cedula = data['cedula']
         correo = data['correo']
-        direccion = data['direccion']
-        persona_id = personadao.guardarPersona(nombre, apellido, telefono, correo, direccion)
-
+        persona_id = personadao.guardarPersona(nombre, apellido, fechanacimiento, cedula, correo)
         if persona_id is not None:
             return jsonify({
                 'success': True,
-                'data': {'id': persona_id, 'nombre': nombre, 'apellido': apellido, 'telefono': telefono, 'correo': correo, 'direccion': direccion},
+                'data': {'id': persona_id, 'nombre': nombre, 'apellido': apellido, 'fechanacimiento': fechanacimiento, 'cedula': cedula, 'correo': correo,},
                 'error': None
             }), 201
         else:
-            return jsonify({
-                'success': False,
-                'error': 'No se pudo guardar persona. Consulte con el administrador.'
-            }), 500
-
+            return jsonify({ 'success': False, 'error': 'No se pudo guardar persona. Consulte con el administrador.' }), 500
     except Exception as e:
         app.logger.error(f"Error al agregar persona: {str(e)}")
         return jsonify({
@@ -96,34 +90,32 @@ def addPersona():
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-
-# Actualiza una persona por ID
 @persapi.route('/personas/<int:persona_id>', methods=['PUT'])
 def updatePersona(persona_id):
     data = request.get_json()
     personadao = PersonaDao()
 
-    # Validar que el JSON tenga los campos requeridos
-    campos_requeridos = ['nombre', 'apellido', 'telefono', 'correo', 'direccion']
+    # Validar que el JSON no esté vacío y tenga las propiedades necesarias
+    campos_requeridos = ['nombre', 'apellido', 'fechanacimiento', 'cedula', 'correo']
 
+    # Verificar si faltan campos o son vacíos
     for campo in campos_requeridos:
         if campo not in data or data[campo] is None or len(data[campo].strip()) == 0:
             return jsonify({
-                'success': False,
-                'error': f'El campo {campo} es obligatorio y no puede estar vacío.'
-            }), 400
-
+                            'success': False,
+                            'error': f'El campo {campo} es obligatorio y no puede estar vacío.'
+                            }), 400
+        
     try:
-        nombre = data['nombre']
-        apellido = data['apellido']
-        telefono = data['telefono']
+        nombre = data['nombre'].upper()
+        apellido = data['apellido'].upper()
+        fechanacimiento = data['fechanacimiento']
+        cedula = data['cedula']
         correo = data['correo']
-        direccion = data['direccion']
-
-        if personadao.updatePersona(persona_id, nombre, apellido, telefono, correo, direccion):
+        if personadao.updatePersona(persona_id, nombre.upper(), apellido.upper(), fechanacimiento, cedula, correo):
             return jsonify({
                 'success': True,
-                'data': {'id': persona_id, 'nombre': nombre, 'apellido': apellido, 'telefono': telefono, 'correo': correo, 'direccion': direccion},
+                'data': {'id': persona_id, 'nombre': nombre, 'apellido': apellido, 'fechanacimiento': fechanacimiento, 'cedula': cedula, 'correo': correo,},
                 'error': None
             }), 200
         else:
@@ -131,7 +123,6 @@ def updatePersona(persona_id):
                 'success': False,
                 'error': 'No se encontró la persona con el ID proporcionado o no se pudo actualizar.'
             }), 404
-
     except Exception as e:
         app.logger.error(f"Error al actualizar persona: {str(e)}")
         return jsonify({
@@ -139,13 +130,12 @@ def updatePersona(persona_id):
             'error': 'Ocurrió un error interno. Consulte con el administrador.'
         }), 500
 
-
-# Elimina una persona por ID
 @persapi.route('/personas/<int:persona_id>', methods=['DELETE'])
 def deletePersona(persona_id):
     personadao = PersonaDao()
 
     try:
+        # Usar el retorno de eliminarPersona para determinar el éxito
         if personadao.deletePersona(persona_id):
             return jsonify({
                 'success': True,
