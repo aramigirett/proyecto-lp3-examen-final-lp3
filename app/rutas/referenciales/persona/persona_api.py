@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app as app
 from app.dao.referenciales.persona.PersonaDao import PersonaDao
 
-
 persapi = Blueprint('persapi', __name__)
 
 # Trae todas las personas
