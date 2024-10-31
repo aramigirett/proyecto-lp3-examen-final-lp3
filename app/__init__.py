@@ -1,4 +1,5 @@
 from flask import Flask
+from flask import render_template
 
 app = Flask(__name__)
 
@@ -155,3 +156,10 @@ app.register_blueprint(pdcapi, url_prefix=f'{apiversion1}/{modulo1}/registrar-pe
 app.register_blueprint(sucapi, url_prefix=apiversion1)
 
 
+@app.route('/login')
+def login():
+    return render_template('login-index.html')
+
+@app.route('/vista')
+def vista():
+    return render_template('vista-index.html')
