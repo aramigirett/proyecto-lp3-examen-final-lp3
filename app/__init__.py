@@ -4,12 +4,14 @@ from flask import render_template
 app = Flask(__name__)
 
 # importar referenciales
+from app.rutas.login.login_routes import loginmod
+from app.rutas.login.vista_routes import vistamod
 from app.rutas.referenciales.ciudad.ciudad_routes import ciumod #ciudad
 from app.rutas.referenciales.paises.pais_routes import paimod   #pais
 from app.rutas.referenciales.nacionalidad.nacionalidad_routes import naciomod  #nacionalidad
 from app.rutas.referenciales.ocupacion.ocupacion_routes import ocupmod  #ocupacion
 from app.rutas.referenciales.estado_civil.estado_civil_routes import estacivmod  #estado civil
-from app.rutas.referenciales.sexo.sexo_routes import sexmod  #sexo
+
 from app.rutas.referenciales.estado_cita.estado_cita_routes import estacitmod  #estado de la cita
 from app.rutas.referenciales.persona.persona_routes import persmod  #persona
 from app.rutas.referenciales.especialidad.especialidad_routes import especimod  #especialidad
@@ -25,12 +27,14 @@ from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedidos_comp
 
 # registrar referenciales
 modulo0 = '/referenciales'
+app.register_blueprint(loginmod, url_prefix=f'{modulo0}/login') 
+app.register_blueprint(vistamod, url_prefix=f'{modulo0}/login')
 app.register_blueprint(ciumod, url_prefix=f'{modulo0}/ciudad') #ciudad
 app.register_blueprint(paimod, url_prefix=f'{modulo0}/paises') #pais
 app.register_blueprint(naciomod, url_prefix=f'{modulo0}/nacionalidad')  #nacionalidad
 app.register_blueprint(ocupmod, url_prefix=f'{modulo0}/ocupacion')  #ocupacion
 app.register_blueprint(estacivmod, url_prefix=f'{modulo0}/estadocivil')  #estado civil
-app.register_blueprint(sexmod, url_prefix=f'{modulo0}/sexo')  #sexo
+
 app.register_blueprint(estacitmod, url_prefix=f'{modulo0}/estadocita')  #estado de la cita
 app.register_blueprint(persmod, url_prefix=f'{modulo0}/persona') #persona
 app.register_blueprint(especimod, url_prefix=f'{modulo0}/especialidad') #especialidad
@@ -59,8 +63,7 @@ from app.rutas.referenciales.ocupacion.ocupacion_api import ocupapi
 #estado civil
 from app.rutas.referenciales.estado_civil.estado_civil_api import estacivapi
 
-#sexo
-from app.rutas.referenciales.sexo.sexo_api import sexapi
+
 
 #estado de la cita
 from app.rutas.referenciales.estado_cita.estado_cita_api import estacitapi
@@ -112,9 +115,7 @@ app.register_blueprint(ocupapi, url_prefix=version1)
 version1 = '/api/v1'
 app.register_blueprint(estacivapi, url_prefix=version1)
 
-#sexo
-version1 = '/api/v1'
-app.register_blueprint(sexapi, url_prefix=version1)
+
 
 #Estado de la cita
 version1 = '/api/v1'
