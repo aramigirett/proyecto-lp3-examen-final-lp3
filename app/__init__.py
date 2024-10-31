@@ -23,6 +23,10 @@ from app.rutas.referenciales.turno.turno_routes import turmod  #turno
 from app.rutas.referenciales.historia_clinica.historiaclinica_routes import hiscmod
 
 
+# importar gestionar compras
+from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedidos_compras_routes \
+    import pdcmod
+
 # registrar referenciales
 modulo0 = '/referenciales'
 app.register_blueprint(loginmod, url_prefix=f'{modulo0}/login') 
@@ -43,6 +47,10 @@ app.register_blueprint(instmod, url_prefix=f'{modulo0}/instrumento') #instrument
 app.register_blueprint(turmod, url_prefix=f'{modulo0}/turno') #turno
 app.register_blueprint(hiscmod, url_prefix=f'{modulo0}/historiaclinica') #historia clinica
 
+
+# registro de modulos - gestionar compras
+modulo1 = '/gestionar-compras'
+app.register_blueprint(pdcmod, url_prefix=f'{modulo1}/registrar-pedido-compras')
 
 #ciudad
 from app.rutas.referenciales.ciudad.ciudad_api import ciuapi
@@ -89,6 +97,10 @@ from app.rutas.referenciales.turno.turno_api import turnoapi
 #historia clinica
 from app.rutas.referenciales.historia_clinica.historiaclinica_api import histocliapi
 
+
+from app.rutas.referenciales.sucursal.sucursal_api import sucapi
+from app.rutas.gestionar_compras.registrar_pedido_compras.registrar_pedido_compras_api \
+    import pdcapi
 
 # APIS v1
 #Ciudad
@@ -164,3 +176,9 @@ def login():
 @app.route('/vista')
 def vista():
     return render_template('vista-index.html')
+
+
+# Gestionar compras API
+apiversion1 = '/api/v1'
+app.register_blueprint(pdcapi, url_prefix=f'{apiversion1}/{modulo1}/registrar-pedido-compras')
+app.register_blueprint(sucapi, url_prefix=apiversion1)
