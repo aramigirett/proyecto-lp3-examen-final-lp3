@@ -2,27 +2,65 @@
 from flask import current_app as app
 from app.conexion.Conexion import Conexion
 
-class CiudadDao:
+class ProductoDao:
 
-    def getCiudades(self):
+    def get_productos(self):
 
-        ciudadSQL = """
-        SELECT id_ciudad, descripcion
-        FROM ciudades
+        sucursal_sql = """
+        SELECT
+            id_producto
+            , nombre
+            , cantidad
+            , precio_unitario
+        FROM
+            public.productos
         """
         # objeto conexion
         conexion = Conexion()
         con = conexion.getConexion()
         cur = con.cursor()
         try:
-            cur.execute(ciudadSQL)
-            ciudades = cur.fetchall() # trae datos de la bd
+            cur.execute(sucursal_sql)
+            productos = cur.fetchall() # trae datos de la bd
 
             # Transformar los datos en una lista de diccionarios
-            return [{'id_ciudad': ciudad[0], 'descripcion': ciudad[1]} for ciudad in ciudades]
+            return [{'id_producto': item[0], 'nombre': item[1]\
+                , 'cantidad': item[2], 'precio_unitario': item[3]} for item in productos]
 
         except Exception as e:
-            app.logger.error(f"Error al obtener todas las ciudades: {str(e)}")
+            app.logger.error(f"Error al obtener todas las productos: {str(e)}")
+            return []
+
+        finally:
+            cur.close()
+            con.close()
+
+    def get_sucursal_depositos(self, id_sucursal: int):
+
+        sucursal_sql = """
+        SELECT
+            sd.id_deposito
+            , d.descripcion nombre_deposito
+        FROM
+            sucursal_depositos sd
+        LEFT JOIN depositos d
+            ON sd.id_deposito = d.id_deposito
+        WHERE
+            sd.id_sucursal = %s AND sd.estado = true
+        """
+        # objeto conexion
+        conexion = Conexion()
+        con = conexion.getConexion()
+        cur = con.cursor()
+        try:
+            cur.execute(sucursal_sql, (id_sucursal,))
+            sucursales = cur.fetchall() # trae datos de la bd
+
+            # Transformar los datos en una lista de diccionarios
+            return [{'id_deposito': sucursal[0], 'nombre_deposito': sucursal[1]} for sucursal in sucursales]
+
+        except Exception as e:
+            app.logger.error(f"Error al obtener las sucursales con depositos: {str(e)}")
             return []
 
         finally:
@@ -32,8 +70,8 @@ class CiudadDao:
     def getCiudadById(self, id):
 
         ciudadSQL = """
-        SELECT id_ciudad, descripcion
-        FROM ciudades WHERE id_ciudad=%s
+        SELECT id, descripcion
+        FROM ciudades WHERE id=%s
         """
         # objeto conexion
         conexion = Conexion()
@@ -44,7 +82,7 @@ class CiudadDao:
             ciudadEncontrada = cur.fetchone() # Obtener una sola fila
             if ciudadEncontrada:
                 return {
-                        "id_ciudad": ciudadEncontrada[0],
+                        "id": ciudadEncontrada[0],
                         "descripcion": ciudadEncontrada[1]
                     }  # Retornar los datos de la ciudad
             else:
@@ -60,7 +98,7 @@ class CiudadDao:
     def guardarCiudad(self, descripcion):
 
         insertCiudadSQL = """
-        INSERT INTO ciudades(descripcion) VALUES(%s) RETURNING id_ciudad
+        INSERT INTO ciudades(descripcion) VALUES(%s) RETURNING id
         """
 
         conexion = Conexion()
@@ -90,7 +128,7 @@ class CiudadDao:
         updateCiudadSQL = """
         UPDATE ciudades
         SET descripcion=%s
-        WHERE id_ciudad=%s
+        WHERE id=%s
         """
 
         conexion = Conexion()
@@ -117,7 +155,7 @@ class CiudadDao:
 
         updateCiudadSQL = """
         DELETE FROM ciudades
-        WHERE id_ciudad=%s
+        WHERE id=%s
         """
 
         conexion = Conexion()
