@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+    
 {% block titulo %}
 Estados Civiles
 {% endblock %}
@@ -8,53 +8,54 @@ Estados Civiles
 <div class="container mt-4">
     <h3>Listar Estado Civil</h3>
 
-    <!-- Tarjeta -->
+    <!-- tarjeta -->
     <div class="card">
-        <div class="card-header">
-            <button type="button" class="btn btn-outline-primary" id="btnAgregar">Agregar</button>
-        </div>
-        <div class="card-body">
-            <table class="table table-striped" id="tbl">
-                <thead>
-                    <tr>
-                        <th>Estado Civil</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+      <div class="card-header">
+        <button type="button" class="btn btn-outline-primary" id="btnAgregar">Agregar</button>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped" id="tbl">
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+      </div>
     </div>
-    <!-- /Tarjeta -->
+    <!-- /tarjeta -->
 
     <!-- El formulario -->
     <div class="modal" id="modalFormulario">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+      <!-- La clase modal-dialog-centered centra el modal -->
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title" id="modalTitle"></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title" id="modalTitle"></h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
 
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <div class="form-group">
-                        <input type="hidden" id="txtEstadoCivilId">
-                        <label for="txtEstadoCivil">Estado Civil:</label>
-                        <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtEstadoCivil">
-                    </div>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                </div>
-
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="hidden" id="txtIdEstadoCivil">
+              <label for="txtDescripcion">Descripción:</label>
+              <input type="text" class="form-control" placeholder="Ingrese el estado civil" id="txtDescripcion">
             </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnGuardar">Guardar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+          </div>
+
         </div>
+      </div>
     </div>
 
     <div class="row mt-4 d-none" id="rowAlerta">
@@ -70,17 +71,18 @@ Estados Civiles
 
 {% block js %}
 <script>
+
   const initDatatable = () => {
     $('#tbl').DataTable({
       language: {
         url: "{{ url_for('static', filename='vendor/datatables/es-ES.json') }}",
       },
-      ajax: '/api/v1/estadocivil',
+      ajax:'/api/v1/estadocivil',
       columns: [
-        { data: 'estado_civil' },
+        { data: 'descripcion' },
         { data: function(row) {
             return `<button type="button" name="btn_editar" class="btn btn-outline-primary" data-id="${row.id}">Editar</button>
-                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id}">Eliminar</button>`;
+                    <button type="button" name="btn_eliminar" class="btn btn-outline-warning" data-id="${row.id}">Eliminar</button>`
           }
         }
       ]
@@ -89,33 +91,34 @@ Estados Civiles
 
   const agregar = () => {
     $('#btnAgregar').on('click', function(){
+      // Setear un título a modal
       $('#modalTitle').text("Agregar Estado Civil");
-      $('#txtEstadoCivilId').val("");
-      $('#txtEstadoCivil').val("");
+      // inicia ventana modal
+      $('#txtIdEstadoCivil').val("");
+      $('#txtDescripcion').val("");
       $('#modalFormulario').modal();
     });
   }
 
   const guardar = () => {
     $('#btnGuardar').on('click', function() {
-      const id = $('#txtEstadoCivilId').val();
-      const nuevoEstadoCivil = $('#txtEstadoCivil').val();
+      const idEstadoCivil = $('#txtIdEstadoCivil').val();
+      const nuevaDescripcion = $('#txtDescripcion').val();
       const tabla = $('#tbl').DataTable();
 
-      if(id) {
-        // Actualizar
-        fetch(`/api/v1/estadocivil/${id}`, {
+      if(idEstadoCivil) {
+        // update
+        fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
+          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
         })
         .then(resp => resp.json())
         .then(data => {
           if(data && !data.error && data.success) {
             tabla.ajax.reload();
-            Swal.fire("Actualizado", "El Estado Civil ha sido actualizado correctamente.", "success");
+            Swal.fire("Actualizado", "El Estado Civil ha sido actualizada correctamente.", "success");
           } else {
             Swal.fire(data.error);
           }
@@ -124,19 +127,18 @@ Estados Civiles
           Swal.fire("Error", "Ocurrió un error al actualizar el Estado Civil.", "error");
         });
       } else {
-        // Insertar
-        fetch(`/api/v1/estadocivil`, {
+        // insert
+        fetch(`/api/v1/estadosciviles`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ estado_civil: nuevoEstadoCivil })
+          }, body: JSON.stringify({ descripcion: nuevaDescripcion})
         })
         .then(resp => resp.json())
         .then(data => {
           if(data && !data.error && data.success) {
             tabla.ajax.reload();
-            Swal.fire("Agregado", "El Estado Civil ha sido agregado correctamente.", "success");
+            Swal.fire("Actualizado", "El Estado Civil ha sido agregada correctamente.", "success");
           } else {
             Swal.fire(data.error);
           }
@@ -145,13 +147,14 @@ Estados Civiles
           Swal.fire("Error", "Ocurrió un error al guardar el Estado Civil.", "error");
         });
       }
-      $('#txtEstadoCivil').val("");
+      $('#txtDescripcion').val("");
       $('#modalFormulario').modal("hide");
     });
   }
 
   const editar = () => {
-    $('#tbl').on('click', 'button[name="btn_editar"]', function(){
+    $('#tbl').on('click', 'button[name="btn_editar"]',function(){
+      // Mostrar mensaje de confirmación usando sweetalert
       Swal.fire({
         title: "¿Deseas editar este registro?",
         showCancelButton: true,
@@ -159,12 +162,14 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
+          //Swal.fire("Saved!", "", "success");
           $('#modalTitle').text("Editar Estado Civil");
 
-          const id = $(this).data('id');
-          $('#txtEstadoCivilId').val(id);
+          const idEstadoCivil = $(this).data('id');
+          $('#txtIdEstadoCivil').val(idEstadoCivil);
 
-          fetch(`/api/v1/estadocivil/${id}`, {
+          // Necesitamos obtener la descripción del backend
+          fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -172,7 +177,7 @@ Estados Civiles
           })
           .then(resp => resp.json())
           .then(data => {
-            $('#txtEstadoCivil').val(data.data.estado_civil);
+            $('#txtDescripcion').val(data.data.descripcion);
             $('#modalFormulario').modal();
           });
         }
@@ -181,8 +186,9 @@ Estados Civiles
   }
 
   const eliminar = () => {
-    $('#tbl').on('click', 'button[name="btn_eliminar"]', function(){
-      const id = $(this).data('id');
+    $('#tbl').on('click', 'button[name="btn_eliminar"]',function(){
+      const idEstadoCivil = $(this).data('id');
+      // Mostrar mensaje de confirmación usando sweetalert
       Swal.fire({
         title: "¿Deseas eliminar este registro?",
         showCancelButton: true,
@@ -190,7 +196,7 @@ Estados Civiles
         cancelButtonText: `No`
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/api/v1/estadocivil/${id}`, {
+          fetch(`/api/v1/estadosciviles/${idEstadoCivil}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -199,10 +205,11 @@ Estados Civiles
           .then(resp => resp.json())
           .then(data => {
             if(data && !data.error && data.success) {
-              const fila = $(this).closest('tr');
+              // Para borrar la fila del datatable(cliente)
+              const fila =$(this).closest('tr');
               const tabla = $('#tbl').DataTable();
               tabla.row(fila).remove().draw();
-              Swal.fire("Eliminado", "El registro ha sido eliminado correctamente.", "success");
+              Swal.fire("Eliminado", "", data.success);
             } else {
               Swal.fire(data.error);
             }
@@ -211,6 +218,7 @@ Estados Civiles
           });
         }
       });
+
     });
   }
 
